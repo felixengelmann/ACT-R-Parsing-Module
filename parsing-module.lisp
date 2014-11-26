@@ -39,6 +39,7 @@
 ;;;             :         *attached-items* (with functions like (parsing-get-index))
 ;;;             :     [X] function for printing parser variables (print-parsing-state)
 ;;;             :     [ ] Put prefix "parsing" before each function name
+;;;             :     [ ] current-clause maintenance
 ;;;
 ;;; ----- History -----
 ;;; 2010.10.22 Felix:
@@ -97,7 +98,7 @@
 ;;;
 (defstruct 
   parsing-module model-name busy failed error jammed lex-busy lex-error lex-jammed lex-failed 
-  glf grt llf lrt 
+  glf grt llf lrt srpr srprhl 
   parser-busy begin-time current-word current-index parse-loc current-ip 
   durations attached-positions attached-items
   unattached-positions
@@ -211,6 +212,10 @@
 (defun parsing-module-params (parsing param)
   (if (consp param)
     (case (car param)
+      (:SURPRISAL-FACTOR
+        (setf (parsing-module-srpr parsing) (cdr param)))
+      (:SURPRISAL-HL-FACTOR
+        (setf (parsing-module-srprhl parsing) (cdr param)))
       (:gram-lf
         (setf (parsing-module-glf parsing) (cdr param)))
       (:gram-rt
@@ -221,8 +226,12 @@
         (setf (parsing-module-lrt parsing) (cdr param)))
       (:gram-force-merge
         (setf (parsing-module-force-merge parsing) (cdr param)))
-		)
+    )
     (case param
+      (:SURPRISAL-FACTOR
+       (parsing-module-srpr parsing))
+      (:SURPRISAL-HL-FACTOR
+       (parsing-module-srprhl parsing))
       (:gram-lf 
         (parsing-module-glf parsing))
       (:gram-rt 
@@ -504,7 +513,7 @@
 
 ;;;
 ;;; MESSAGES
-;;; To do: schedule these as events of the module
+;;; TODO: schedule these as events of the module
 ;;; 
 
 (defun parsing-skip-message (word)
@@ -549,6 +558,7 @@
 (defun parsing-get-word nil
   (parsing-module-current-word (get-module parsing)))
 (defun parsing-get-loc nil
+  ;; TODO: get loc from internal value
   (let* ((imchunk (buffer-read 'imaginal))
          (loc (chunk-slot-value-fct imchunk 'parse-loc)))
     loc
@@ -590,7 +600,18 @@
 (define-module-fct 'parsing
   '(grammatical lexical contextual structural structural2 structural3 XPb IPb DPb DP2b NPb CPb VPb PPb VP2b AdjPb AdvPb lex prediction)             ;; buffers
   
-  (list 
+  (list (define-parameter :SURPRISAL-FACTOR
+              :owner T
+              :valid-test #'nonneg
+              :warning "a non-negative number" 
+              :default-value 0.001
+              :documentation "Scaling constant for surprisal")
+        (define-parameter :SURPRISAL-HL-FACTOR
+              :owner T
+              :valid-test #'nonneg
+              :warning "a non-negative number" 
+              :default-value 0.01
+              :documentation "Scaling constant for high level surprisal")
         (define-parameter :gram-lf :owner T :valid-test #'nonneg :default-value 1.0
           :warning "a non-negative number" :documentation "Latency Factor for grammatical buffer")
         (define-parameter :gram-rt :owner T :valid-test #'numberp :default-value 0.0
