@@ -103,6 +103,7 @@
   durations attached-positions attached-items
   unattached-positions
   force-merge hook-id1 hook-id2 copied-chunks
+  regr-util att-util att-util2 sp-time
   )
 
 
@@ -226,6 +227,14 @@
         (setf (parsing-module-lrt parsing) (cdr param)))
       (:gram-force-merge
         (setf (parsing-module-force-merge parsing) (cdr param)))
+      (:att-util
+        (setf (parsing-module-att-util parsing) (cdr param)))
+      (:att-util2
+        (setf (parsing-module-att-util2 parsing) (cdr param)))
+      (:regr-util
+        (setf (parsing-module-regr-util parsing) (cdr param)))
+      (:sp-time
+        (setf (parsing-module-sp-time parsing) (cdr param)))
     )
     (case param
       (:SURPRISAL-FACTOR
@@ -242,6 +251,14 @@
         (parsing-module-lrt parsing))
       (:gram-force-merge
         (parsing-module-force-merge parsing))
+      (:att-util
+        (parsing-module-att-util parsing))
+      (:att-util2
+        (parsing-module-att-util2 parsing))
+      (:regr-util
+        (parsing-module-regr-util parsing))
+      (:sp-time
+        (parsing-module-sp-time parsing))
       )))
 
 
@@ -620,6 +637,14 @@
           :warning "a non-negative number" :documentation "Latency Factor for lexical buffer")
         (define-parameter :lex-rt :owner T :valid-test #'numberp :default-value 0.0
           :warning "a number" :documentation "Retrieval Threshold for lexical buffer")
+        (define-parameter :att-util :owner T :valid-test #'numberp :default-value 0.0
+          :warning "a number" :documentation "Utility for special attachement production")
+        (define-parameter :att-util2 :owner T :valid-test #'numberp :default-value 0.0
+          :warning "a number" :documentation "Utility for special attachement production")
+        (define-parameter :regr-util :owner T :valid-test #'numberp :default-value 0.0
+          :warning "a number" :documentation "Utility for regression production")
+        (define-parameter :sp-time :owner T :valid-test #'numberp :default-value 0.0
+          :warning "a number" :documentation "Action time for special production")
         (define-parameter :gram-force-merge :owner T :valid-test #'tornil :default-value T
           :warning "T or nil" :documentation "When true, all chunks retrieved and modified in grammatical buffer
                                              will be force-merged with their originals in DM, also when unequal.")
