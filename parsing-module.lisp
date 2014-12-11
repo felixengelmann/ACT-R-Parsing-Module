@@ -96,12 +96,12 @@
 ;;;
 ;;; MODULE STRUCTURE
 ;;;
-(defstruct 
-  parsing-module model-name busy failed error jammed lex-busy lex-error lex-jammed lex-failed 
+(defstruct parsing-module model-name 
+  busy failed error jammed lex-busy lex-error lex-jammed lex-failed 
+  parser-busy 
   glf grt llf lrt srpr srprhl 
-  parser-busy begin-time current-word current-index parse-loc current-ip 
-  durations attached-positions attached-items
-  unattached-positions
+  begin-time current-word current-index parse-loc current-ip 
+  durations attached-positions attached-items unattached-positions
   force-merge hook-id1 hook-id2 copied-chunks
   regr-util att-util att-util2 sp-time
   )
@@ -145,6 +145,17 @@
   ; (delete-event-hook (parsing-module-hook-id1 instance))
   ; (delete-event-hook (parsing-module-hook-id2 instance))
   (setf *copied-chunks* '())
+  (setf (parsing-module-durations instance) nil)
+  (setf (parsing-module-attached-positions instance) nil)
+  (setf (parsing-module-unattached-positions instance) nil)
+  (setf (parsing-module-attached-items instance) nil)
+  (setf (parsing-module-begin-time instance) nil)
+  (setf (parsing-module-current-word instance) nil)
+  (setf (parsing-module-current-index instance) -1)
+  (setf (parsing-module-parse-loc instance) nil)
+  (setf (parsing-module-current-ip instance) nil)
+  (setf (parsing-module-copied-chunks instance) '())
+  
   (suppress-warnings
     (let ((id1 (add-post-event-hook 'detect-set-buffer-chunk))
           (id2 (add-post-event-hook 'detect-set-buffer-chunk-retrieval))) ;; for backward comp.
@@ -606,6 +617,16 @@
   (format t "Attached positions: ~s~%" (parsing-module-attached-positions (get-module parsing)))
   (format t "Attached items: ~s~%" (parsing-module-attached-items (get-module parsing)))
   )
+
+
+
+
+;;;
+;;; LINGUISTICS
+;;;
+
+(defun get-target-loc (eye-loc target-pos)
+  (- (+ eye-loc 10) (* eye-loc (/ (- (parsing-get-index) target-pos) (parsing-get-index)))))
 
 
 
