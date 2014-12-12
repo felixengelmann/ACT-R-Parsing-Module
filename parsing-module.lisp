@@ -621,15 +621,6 @@
 
 
 
-;;;
-;;; LINGUISTICS
-;;;
-
-(defun get-target-loc (eye-loc target-pos)
-  (- (+ eye-loc 10) (* eye-loc (/ (- (parsing-get-index) target-pos) (parsing-get-index)))))
-
-
-
 
 ;;;
 ;;; MODULE DEFINITION
