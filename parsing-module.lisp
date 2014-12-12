@@ -500,11 +500,7 @@
 
 
 (defun attachment-complete (instance attach-time word index)
-  (command-output 
-"---------------------------------------------------------------------------
-+++  Total attachment time for ~A: ~D  +++
----------------------------------------------------------------------------" 
-    word attach-time)
+  (priority-info-message (format nil "Total attachment time for ~A: ~D" word attach-time))
   (push-last attach-time (parsing-module-durations instance))
   (push-last (list index word attach-time) (parsing-module-attached-items instance))
   (push-last index (parsing-module-attached-positions instance))
@@ -527,11 +523,7 @@
 
 
 (defun attachment-aborted (instance attach-time word index)
-  (command-output 
-"---------------------------------------------------------------------------
-+++  Attachment ABORTED for ~A after ~D ms  +++
----------------------------------------------------------------------------" 
-    word attach-time)
+  (priority-info-message (format nil "Attachment ABORTED for ~A after ~D ms  +++" word attach-time))
   (push-last attach-time (parsing-module-durations instance))
   (push-last index (parsing-module-unattached-positions instance))
   (setf (parsing-module-parser-busy instance) nil)
@@ -545,28 +537,39 @@
 ;;; 
 
 (defun parsing-skip-message (word)
-  (model-message (format nil "Word ~s already attached - Skipping integration!" word))
+  (info-message (format nil "Word ~s already attached - Skipping integration!" word))
   nil)
 
 (defun parsing-boost-message (chunk)
-  (command-output 
-"     ------------------------------------------
-!!!!!!!!!!!!!!!!  BOOSTING ACTIVATION OF ~s.
-     ------------------------------------------" 
-     chunk)
+  (event-message (format nil "BOOSTING ACTIVATION OF ~s!" chunk))
   )
 
 
 
-(defun model-message (message)
+;;;
+;;; Output message formats
+;;;
+(defun event-message (message)
+  (command-output "+++ ~6,3F   ~A" (mp-time) message)
+  nil)
+
+(defun info-message (message)
   (command-output "+++  ~A  +++" message)
   nil)
 
-(defun model-message-2 (message)
+(defun priority-event-message (message)
   (command-output 
-"---------------------------------------------------------------------------
-+++  ~A  +++
----------------------------------------------------------------------------"
+"-----------------------------------------------------------------------
+    ~6,3F   ~A
+-----------------------------------------------------------------------" 
+    (mp-time) message)
+  nil)
+
+(defun priority-info-message (message)
+  (command-output 
+"-----------------------------------------------------------------------
+     ~A  
+-----------------------------------------------------------------------"
     message)
   nil)
 
