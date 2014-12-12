@@ -25,7 +25,7 @@
 ;;;             : [X] Add possibility to mark busy lexical and grammatical
 ;;;             :     buffers independently.
 ;;;             : [ ] Add a clear-all-buffers command.
-;;;             : [ ] Make *copied-chunks* an inaccessible parameter
+;;;             : [X] Make *copied-chunks* an inaccessible parameter
 ;;;             : [ ] Add parsing-related structures and functions:
 ;;;             :     [ ] fake-parsing 
 ;;;             :     [ ] record and modify current IP
@@ -107,9 +107,6 @@
   )
 
 
-(defvar *copied-chunks* '() "holds names of chunks copied to retrieval buffer")
-
-
 
 ;;;
 ;;; MODULE INTERNAL FUNCTIONS
@@ -135,8 +132,6 @@
   (setf (parsing-module-lex-jammed instance) nil)
   (setf (parsing-module-lex-error instance) nil)
   (setf (parsing-module-lex-failed instance) nil)
-  ; (setf (parsing-module-*copied-chunks* instance) '())
-  
   )
 
 
@@ -144,7 +139,6 @@
   ; (declare (ignore instance))
   ; (delete-event-hook (parsing-module-hook-id1 instance))
   ; (delete-event-hook (parsing-module-hook-id2 instance))
-  (setf *copied-chunks* '())
   (setf (parsing-module-durations instance) nil)
   (setf (parsing-module-attached-positions instance) nil)
   (setf (parsing-module-unattached-positions instance) nil)
@@ -430,7 +424,7 @@
         (if (chunk-p-fct original)
           (progn 
             (when (no-output (car (sgp :v))) (model-warning " +++ Chunk ~s was copied from ~s. +++" copy original))
-            (setf *copied-chunks* (acons copy original *copied-chunks*)))))
+            (setf (parsing-module-copied-chunks (get-module parsing)) (acons copy original (parsing-module-copied-chunks (get-module parsing)))))))
       )))
 
 
@@ -438,7 +432,7 @@
 ;;; Checks whether syn-obj chunk was copied and merges it with original.
 (defun merge-copied-syn-obj (copy)
   (when (and (parsing-module-force-merge (get-module parsing)) (eq (chunk-chunk-type-fct copy) 'SYN-OBJ))
-    (let ((original (cdr (assoc copy *copied-chunks*))))
+    (let ((original (cdr (assoc copy (parsing-module-copied-chunks (get-module parsing))))))
       (when original
         (if (chunk-p-fct original)
           (progn 
