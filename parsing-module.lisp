@@ -458,6 +458,7 @@
 ;;; PARSING STATE MAINTENANCE
 ;;;
 
+;; TODO: rename to parsing-begin
 (defun parsing-set-begin-time (&optional (word nil) (index nil) (location nil) )
   (let ((time (- (mp-time) (car (no-output (sgp :dat))))))
     (schedule-event-relative 0 'begin-attachment :params (list time word index location)
@@ -481,11 +482,12 @@
   )
 
 
+;; TODO: rename to parsing-complete
 (defun parsing-set-end-time ()
   (let ((attach-time (round (* 1000 (- (mp-time) (parsing-module-begin-time (get-module parsing))))))
         (word (parsing-module-current-word (get-module parsing)))
         (index (parsing-module-current-index (get-module parsing))))
-    (schedule-event-relative 0 'attachment-complete :params (list attach-time word index)
+    (schedule-event-relative 0 'attachment-completed :params (list attach-time word index)
                              :module 'parsing :destination 'parsing 
                              :output 'low :details (format nil "Attachment-complete ~s (~D ms)" word attach-time) 
                              :priority :max)
@@ -493,18 +495,18 @@
 
 
 
-(defun attachment-complete (instance attach-time word index)
+(defun attachment-completed (instance attach-time word index)
   (priority-info-message (format nil "Total attachment time for ~A: ~D" word attach-time))
   (push-last attach-time (parsing-module-durations instance))
   (push-last (list index word attach-time) (parsing-module-attached-items instance))
   (push-last index (parsing-module-attached-positions instance))
   (setf (parsing-module-parser-busy instance) nil)
-    ;; release all syn-obj chunks
-    ;; set current IP
+    ;; TODO: release all syn-obj chunks
+    ;; TODO: set current IP
   )
 
 
-
+;; TODO: rename to parsing-abort
 (defun parsing-set-end-time-abort ()
   (let ((attach-time (round (* 1000 (- (mp-time) (parsing-module-begin-time (get-module parsing))))))
         (word (parsing-module-current-word (get-module parsing)))
@@ -575,6 +577,9 @@
 ;;;
 ;;; FUNCTIONS FOR ACCESSING PARSER INFORMATION
 ;;;
+
+;; TODO: add IP maintenance
+;; TODO: add clause maintenance
 
 (defun parsing-busy nil
   (parsing-module-parser-busy (get-module parsing)))
