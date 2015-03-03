@@ -100,7 +100,7 @@
   busy failed error jammed lex-busy lex-error lex-jammed lex-failed 
   parser-busy 
   glf grt llf lrt srpr srprhl 
-  begin-time current-word current-index parse-loc current-ip 
+  begin-time current-word current-index parse-loc ip-stack 
   durations attached-positions attached-items unattached-positions
   force-merge hook-id1 hook-id2 copied-chunks
   regr-util att-util att-util2 sp-time
@@ -147,7 +147,7 @@
   (setf (parsing-module-current-word instance) nil)
   (setf (parsing-module-current-index instance) -1)
   (setf (parsing-module-parse-loc instance) nil)
-  (setf (parsing-module-current-ip instance) nil)
+  (setf (parsing-module-ip-stack instance) nil)
   (setf (parsing-module-copied-chunks instance) '())
   
   (suppress-warnings
@@ -528,6 +528,54 @@
 
 
 ;;;
+;;; CURRENT IP MAINTENANCE FUNCTIONS
+;;;
+
+;; TODO: replace 'IPb by 'structural
+(defun parsing-get-ip-from-buffer nil
+  ; (let ((strchunk (buffer-read 'structural)))
+  (let ((strchunk (buffer-read 'IPb)))
+    (when strchunk
+      (let ((cat (chunk-slot-value-fct strchunk 'cat)))
+        (if (eq cat 'IP)
+            strchunk
+            nil)
+        ))
+    ))
+
+(defun parsing-set-current-ip nil
+  (let ((ipchunk (parsing-get-ip-from-buffer)))
+    (when ipchunk
+      (model-warning " +++ Setting current IP chunk +++")
+      (push strchunk (parsing-module-ip-stack (get-module-parsing)))
+      )
+    ))
+
+(defun parsing-current-ip nil
+  (let ((ipchunk (parsing-get-ip-from-buffer)))
+    (if ipchunk 
+        ipchunk
+        (car (parsing-module-ip-stack (get-module-parsing))))
+    ))
+
+(defun parsing-mod-current-ip (modlist)
+  (let* ((current-ip (parsing-current-ip)))
+    (mod-chunk-fct current-ip modlist)
+    (model-warning " +++ Modifying IP +++")
+    ))
+
+(defun parsing-pop-current-ip nil
+  (pop (parsing-module-ip-stack (get-module-parsing)))
+  )
+
+(defun parsing-read-current-ip-slot (slot)
+  (let* ((current-ip (parsing-current-ip)))
+    (chunk-slot-value-fct current-ip slot)
+   ))
+
+
+
+;;;
 ;;; MESSAGES
 ;;; TODO: schedule these as events of the module
 ;;; 
@@ -578,8 +626,9 @@
 ;;; FUNCTIONS FOR ACCESSING PARSER INFORMATION
 ;;;
 
-;; TODO: add IP maintenance
 ;; TODO: add clause maintenance
+;; TODO: add IP maintenance
+
 
 (defun parsing-busy nil
   (parsing-module-parser-busy (get-module parsing)))
