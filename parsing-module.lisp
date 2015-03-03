@@ -100,7 +100,7 @@
   busy failed error jammed lex-busy lex-error lex-jammed lex-failed 
   parser-busy 
   glf grt llf lrt srpr srprhl 
-  begin-time current-word current-index parse-loc ip-stack 
+  begin-time current-word current-index parse-loc ip-stack clause-id-stack
   durations attached-positions attached-items unattached-positions
   force-merge hook-id1 hook-id2 copied-chunks
   regr-util att-util att-util2 sp-time
@@ -148,6 +148,7 @@
   (setf (parsing-module-current-index instance) -1)
   (setf (parsing-module-parse-loc instance) nil)
   (setf (parsing-module-ip-stack instance) nil)
+  (setf (parsing-module-clause-id-stack instance) nil)
   (setf (parsing-module-copied-chunks instance) '())
   
   (suppress-warnings
@@ -576,6 +577,23 @@
 
 
 ;;;
+;;; KEEPING TRACK OF C-COMMANDERS
+;;;
+(defun parsing-push-clause nil
+  (push (new-name c) (parsing-module-clause-id-stack (get-module-parsing)))
+  )
+
+(defun parsing-pop-clause nil
+  (pop (parsing-module-clause-id-stack (get-module-parsing)))
+  (car (parsing-module-clause-id-stack (get-module-parsing)))
+  )
+
+(defun parsing-current-clause nil
+  (car (parsing-module-clause-id-stack (get-module-parsing)))
+  )
+
+
+;;;
 ;;; MESSAGES
 ;;; TODO: schedule these as events of the module
 ;;; 
@@ -627,8 +645,6 @@
 ;;;
 
 ;; TODO: add clause maintenance
-;; TODO: add IP maintenance
-
 
 (defun parsing-busy nil
   (parsing-module-parser-busy (get-module parsing)))
