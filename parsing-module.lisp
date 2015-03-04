@@ -653,11 +653,7 @@
 (defun parsing-get-word nil
   (parsing-module-current-word (get-module parsing)))
 (defun parsing-get-loc nil
-  ;; TODO: get loc from internal value
-  (let* ((imchunk (buffer-read 'imaginal))
-         (loc (chunk-slot-value-fct imchunk 'parse-loc)))
-    loc
-    ))
+  (parsing-module-parse-loc (get-module parsing)))
 (defun parsing-get-durations nil
   (parsing-module-durations (get-module parsing)))
 (defun parsing-get-attached-items nil
