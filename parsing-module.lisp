@@ -545,7 +545,7 @@
   (let ((ipchunk (parsing-get-ip-from-buffer)))
     (when ipchunk
       (model-warning " +++ Setting current IP chunk +++")
-      (push strchunk (parsing-module-ip-stack (get-module-parsing)))
+      (push strchunk (parsing-module-ip-stack (get-module parsing)))
       )
     ))
 
@@ -553,7 +553,7 @@
   (let ((ipchunk (parsing-get-ip-from-buffer)))
     (if ipchunk 
         ipchunk
-        (car (parsing-module-ip-stack (get-module-parsing))))
+        (car (parsing-module-ip-stack (get-module parsing))))
     ))
 
 (defun parsing-mod-current-ip (modlist)
@@ -563,7 +563,7 @@
     ))
 
 (defun parsing-pop-current-ip nil
-  (pop (parsing-module-ip-stack (get-module-parsing)))
+  (pop (parsing-module-ip-stack (get-module parsing)))
   )
 
 (defun parsing-read-current-ip-slot (slot)
@@ -577,16 +577,16 @@
 ;;; KEEPING TRACK OF C-COMMANDERS
 ;;;
 (defun parsing-push-clause nil
-  (push (new-name c) (parsing-module-clause-id-stack (get-module-parsing)))
+  (push (new-name c) (parsing-module-clause-id-stack (get-module parsing)))
   )
 
 (defun parsing-pop-clause nil
-  (pop (parsing-module-clause-id-stack (get-module-parsing)))
-  (car (parsing-module-clause-id-stack (get-module-parsing)))
+  (pop (parsing-module-clause-id-stack (get-module parsing)))
+  (car (parsing-module-clause-id-stack (get-module parsing)))
   )
 
 (defun parsing-current-clause nil
-  (car (parsing-module-clause-id-stack (get-module-parsing)))
+  (car (parsing-module-clause-id-stack (get-module parsing)))
   )
 
 
