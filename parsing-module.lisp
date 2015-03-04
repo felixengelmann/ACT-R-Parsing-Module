@@ -542,8 +542,8 @@
     ))
 
 (defun parsing-set-current-ip nil
-  (let ((ipchunk (parsing-get-ip-from-buffer)))
-    (when ipchunk
+  (let ((strchunk (parsing-get-ip-from-buffer)))
+    (when strchunk
       (model-warning " +++ Setting current IP chunk +++")
       (push strchunk (parsing-module-ip-stack (get-module parsing)))
       )
@@ -672,6 +672,8 @@
   (format t "Current word: ~s~%" (parsing-module-current-word (get-module parsing)))
   (format t "Current index: ~s~%" (parsing-module-current-index (get-module parsing)))
   (format t "Last parse-loc: ~s~%" (parsing-module-parse-loc (get-module parsing)))
+  (format t "Current IP: ~s~%" (parsing-current-ip))
+  (format t "Current clause: ~s~%" (parsing-current-clause))
   (format t "Last begin-time: ~s~%" (parsing-module-begin-time (get-module parsing)))
   (format t "Attachment durations: ~s~%" (parsing-module-durations (get-module parsing)))
   (format t "Attached positions: ~s~%" (parsing-module-attached-positions (get-module parsing)))
