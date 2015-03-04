@@ -459,8 +459,7 @@
 ;;; PARSING STATE MAINTENANCE
 ;;;
 
-;; TODO: rename to parsing-begin
-(defun parsing-set-begin-time (&optional (word nil) (index nil) (location nil) )
+(defun parsing-begin (&optional (word nil) (index nil) (location nil) )
   (let ((time (- (mp-time) (car (no-output (sgp :dat))))))
     (schedule-event-relative 0 'begin-attachment :params (list time word index location)
                              :module 'parsing :destination 'parsing 
@@ -483,8 +482,7 @@
   )
 
 
-;; TODO: rename to parsing-complete
-(defun parsing-set-end-time ()
+(defun parsing-complete ()
   (let ((attach-time (round (* 1000 (- (mp-time) (parsing-module-begin-time (get-module parsing))))))
         (word (parsing-module-current-word (get-module parsing)))
         (index (parsing-module-current-index (get-module parsing))))
@@ -507,8 +505,7 @@
   )
 
 
-;; TODO: rename to parsing-abort
-(defun parsing-set-end-time-abort ()
+(defun parsing-abort ()
   (let ((attach-time (round (* 1000 (- (mp-time) (parsing-module-begin-time (get-module parsing))))))
         (word (parsing-module-current-word (get-module parsing)))
         (index (parsing-module-current-index (get-module parsing))))
