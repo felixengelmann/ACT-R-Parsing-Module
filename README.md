@@ -26,10 +26,13 @@ The module uses the following parameters:
 
 ### Interface functions
 
-  - `(parsing-set-begin-time word index location)` Set begin of attachment.
-  - `(parsing-set-end-time)` Set end of attachment.
-  - `(parsing-set-end-time-abort)` Set end of attachment, indicating attachment was canceled.
+  - `(parsing-begin word index location)` Set begin of attachment.
+  - `(parsing-complete)` Set end of attachment.
+  - `(parsing-abort)` Set end of attachment, indicating attachment was canceled.
   - `(parsing-check-attached index)` Check if word is already attached.
+
+#### Parsing state information
+
   - `(parsing-get-index)`
   - `(parsing-get-word)`
   - `(parsing-get-loc)`
@@ -38,3 +41,15 @@ The module uses the following parameters:
   - `(parsing-get-attached-positions)`
   - `(parsing-get-unattached-positions)`
   - `(parsing-print-info)` Displays info about parsing state, current word and location, and attached items.
+
+#### IP maintenance
+  - `(parsing-current-ip)`
+  - `(parsing-set-current-ip)`
+  - `(parsing-pop-current-ip)`
+  - `(parsing-mod-current-ip)`
+  - `(parsing-read-current-ip-slot)`
+
+#### Clause stack maintenance
+  - `(parsing-current-clause)`
+  - `(parsing-push-clause)`
+  - `(parsing-pop-clause)`
