@@ -712,9 +712,9 @@
         (define-parameter :lex-rt :owner T :valid-test #'numberp :default-value 0.0
           :warning "a number" :documentation "Retrieval Threshold for lexical buffer")
         (define-parameter :att-util :owner T :valid-test #'numberp :default-value 0.0
-          :warning "a number" :documentation "Utility for special attachement production")
+          :warning "a number" :documentation "Utility for special attachment production")
         (define-parameter :att-util2 :owner T :valid-test #'numberp :default-value 0.0
-          :warning "a number" :documentation "Utility for special attachement production")
+          :warning "a number" :documentation "Utility for special attachment production")
         (define-parameter :regr-util :owner T :valid-test #'numberp :default-value 0.0
           :warning "a number" :documentation "Utility for regression production")
         (define-parameter :sp-time :owner T :valid-test #'numberp :default-value 0.0
